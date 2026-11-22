@@ -1,0 +1,45 @@
+version: '3.8'
+
+services:
+  postgres:
+    image: postgres:16-alpine
+    container_name: fintech_postgres
+    restart: always
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: mypassword
+      POSTGRES_DB: clean_db
+    ports:
+      - "5433:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d clean_db"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: fintech_api
+    restart: on-failure
+    depends_on:
+      postgres:
+        condition: service_healthy
+    ports:
+      - "8080:8080"
+    environment:
+      PORT: "8080"
+      ENVIRONMENT: "production"
+      DB_URL: "postgres://postgres:mypassword@postgres:5432/clean_db?sslmode=disable"
+      JWT_SECRET: "${JWT_SECRET:-change-in-production}"
+      STRIPE_SECRET_KEY: "${STRIPE_SECRET_KEY:-}"
+      STRIPE_WEBHOOK_SECRET: "${STRIPE_WEBHOOK_SECRET:-}"
+      BREVO_API_KEY: "${BREVO_API_KEY:-}"
+      BREVO_SENDER_EMAIL: "${BREVO_SENDER_EMAIL:-support@fintech.local}"
+      BREVO_SENDER_NAME: "Fintech Wallet"
+
+volumes:
+  postgres_data:

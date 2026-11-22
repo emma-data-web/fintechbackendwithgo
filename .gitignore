@@ -1,0 +1,47 @@
+# Binaries and build outputs
+bin/
+dist/
+/tmp/
+*.exe
+*.exe~
+*.dll
+*.so
+*.dylib
+*.test
+*.out
+
+# Environment variables and secrets (preserve template)
+.env
+.env.*
+*.pem
+*.key
+
+# Go workspace and cache
+vendor/
+go.work
+go.work.sum
+
+# Coverage and test profiles
+*.coverprofile
+coverage.txt
+coverage.html
+
+# IDEs and Editors
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+
+# Operating System files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# Database files / local dumps
+*.dump
+*.sql.gz
